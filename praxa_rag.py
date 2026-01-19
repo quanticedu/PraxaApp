@@ -3,6 +3,7 @@ from langchain.prompts import ChatPromptTemplate
 #from langchain_huggingface import HuggingFaceEmbeddings
 #from langchain_community.vectorstores import Chroma
 from langchain.schema.runnable import RunnablePassthrough, RunnableParallel
+from langchain_core.documents import Document
 #from langchain_community.chat_models import ChatOpenAI
 #from typing import Optional
 import context, model
@@ -20,7 +21,7 @@ question_and_docs = RunnableParallel(
       "context_docs": retriever }
 )
 
-def make_context_string(dict_with_docs):
+def make_context_string(dict_with_docs: dict[str, Document]):
     """
     Takes the contents of each Document object in a dictionary and joins them
     in one string, separated by two newlines
@@ -36,7 +37,13 @@ model = model.get_model()
 answer_chain = context | prompt_template | model
 chain_with_sources = question_and_docs.assign(answer=answer_chain)
 
-def answer_and_sources(question):
+def answer_and_sources(question: str) -> dict[str, str]:
+    """
+    Invokes the model with the given question.
+    
+    :param question: The question to ask.
+    :returns: Dictionary with the answer and supporting sources
+    """
     result = chain_with_sources.invoke(question)
     response_text = result["answer"].content
     sources = "\n\n".join(f"{doc.metadata['source']}, page {doc.metadata['page']}" for doc in result["context_docs"])

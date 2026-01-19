@@ -1,21 +1,23 @@
 import gdown
 from pathlib import Path
-from langchain_community.document_loaders import PyPDFDirectoryLoader
+#from ??? import ???
 from langchain_core.documents import Document
 from langchain_core.embeddings import Embeddings
 from langchain_text_splitters import RecursiveCharacterTextSplitter
 from langchain_huggingface import HuggingFaceEmbeddings
 from langchain_chroma import Chroma
-from typing import Iterable, Optional
+from typing import Iterable
 
-def download_context_data(pdfs: Iterable[dict[str, str]], path: str = "./context_data"):
+def download_context_data(pdfs: Iterable[dict[str, str]], path: str = "./context_data") -> None:
     """
     Downloads PDFs and stores them in local storage.
     
     :param pdfs: an iterable of dictionaries. each dictionary must have
                  keys of "url" with the URL of the PDF and "filename"
                  with the name to store the file as.
+    :type pdfs: Iterable[dict[str,str]]
     :param path: location to store the files (default is "./context_data")
+    :type path: str
     """
     p = Path(path)
     p.mkdir(parents=True, exist_ok=True)
@@ -23,63 +25,86 @@ def download_context_data(pdfs: Iterable[dict[str, str]], path: str = "./context
     for pdf in pdfs:
         gdown.download(pdf["url"], f"{path}/{pdf['filename']}", quiet=True)
 
-def load_context_data(path: str = "./context_data"):
+def load_context_data(path: str = "./context_data") -> list[Document]:
     """
     Loads multiple PDFs into LangChain Document objects.
     
     :param path: location of the files (default: "./context_data")
-    :returns: list of Document objects
+    :type path: str
+    :return: list of Document objects
+    :rtype: list[Document]
     """
-    loader = PyPDFDirectoryLoader(path)
-    return loader.load()
+#    loader = ???
+#    return ???
+    pass
 
-def chunk_context_data(context_data: list[Document]):
+def chunk_context_data(context_data: list[Document]) -> list[Document]:
     """
     Split the context data into overlapping chunks
     
-    :param context_data: An iterable of Documents
+    :param context_data: the Documents to split into chunks
+    :type context_data: list[Document]
+    :return: the chunked Documents
+    :rtype: list[Document]
     """
-    text_splitter = RecursiveCharacterTextSplitter(
-        chunk_size=1000,
-        chunk_overlap=100,
-        length_function=len,
-        is_separator_regex=False
-    )
+#    text_splitter = RecursiveCharacterTextSplitter(
+#        ???,
+#        ???,
+#        ???,
+#        ???
+#    )
 
-    return text_splitter.split_documents(context_data)
+#    return ???
+    pass
 
-def get_embedding_model(model_name: str = "sentence-transformers/all-MiniLM-L6-v2"):
+def get_embedding_model(model_name: str = "sentence-transformers/all-MiniLM-L6-v2") -> HuggingFaceEmbeddings:
     """
     Gets an embedding model for vectorizing the context data.
 
     :param model_name: The name of the embedding model to get (default is sentence-transformers/all-MiniLM-L6-v2)
+    :type model_name: str
+    :return: The embedding model.
+    :rtype: HuggingFaceEmbeddings
     """
-    return HuggingFaceEmbeddings(model_name=model_name)
+#    return HuggingFaceEmbeddings(model_name=???)
+    pass
 
-def get_vector_store(chunks: Optional[list[Document]] = None, embedding_model: Optional[Embeddings] = None, path: str = "./chromadb"):
+def create_vector_store(chunks: list[Document], embedding_model: Embeddings = get_embedding_model(), path: str = "./chromadb") -> Chroma:
     """
-    Get a persistent vector store. If it doesn't exist, create it from the provided context data.
+    Create a persistent vector store from a list of chunked documents.
     
-    :param chunks: The context data
+    :param chunks: The context data. If not specified, create an empty vector store.
+    :type chunks: list[Document]
     :param embedding_model: The embedding model to use (default is the default for get_embedding_model)
-    :param path: Path to create the vector store
-
-    :returns: The vector store
+    :type embedding_model: Embeddings
+    :param path: Path to the vector store
+    :type path: str
+    :return: The vector store
+    :rtype: Chroma
     """
-    if not embedding_model:
-        embedding_model=get_embedding_model()
-
-    if Path(path).exists():
-        return Chroma(
-            persist_directory=path,
-            embedding_function=embedding_model
-        )
-    else:
-        return Chroma.from_documents(
-            documents=chunks or [],
-            embedding=embedding_model,
-            persist_directory=path
-        )
+#    return Chroma???
+#        ???,
+#        ???,
+#        persist_directory=???
+#    )
+    pass
+    
+def get_vector_store(embedding_model: Embeddings = get_embedding_model(), path: str = "./chromadb") -> Chroma:
+    """
+    Gets a persistent vector store.
+    
+    :param embedding_model: The embedding model to use (defaul is to use the default for get_embedding_model)
+    :type embedding_model: Embeddings
+    :param path: path to the vector store
+    :type path: str
+    :return: The vector store
+    :rtype: Chroma
+    """
+    return Chroma(
+        persist_directory=path,
+        embedding_function=embedding_model
+    )
+    pass
 
 if __name__ == "__main__":
     # when run as a script, run some tests to demonstrate capabilities
@@ -93,7 +118,7 @@ if __name__ == "__main__":
 #    context_data = load_context_data()
 #    chunks = chunk_context_data(context_data)
 #    embedding_model = get_embedding_model()
-#    vector_store = get_vector_store(chunks, embedding_model)
+#    vector_store = create_vector_store(chunks, embedding_model)
 
 #    for page in context_data:
 #        print(page)
