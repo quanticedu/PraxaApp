@@ -10,7 +10,7 @@ from langchain_core.documents import Document
 
 #retriever = ???.as_retriever()
 
-#question_and_docs = ???(
+#question_and_docs = RunnableParallel(
 #    { "question": ???,
 #      "context_docs": ??? }
 #)
