@@ -1,6 +1,6 @@
 import gdown
 from pathlib import Path
-#from ??? import ???
+from langchain_community.document_loaders import PyPDFDirectoryLoader
 from langchain_core.documents import Document
 from langchain_core.embeddings import Embeddings
 from langchain_text_splitters import RecursiveCharacterTextSplitter
@@ -34,8 +34,8 @@ def load_context_data(path: str = "./context_data") -> list[Document]:
     :return: list of Document objects
     :rtype: list[Document]
     """
-#    loader = ???
-#    return ???
+    loader = PyPDFDirectoryLoader(path)
+    return loader.load()
     pass
 
 def chunk_context_data(context_data: list[Document]) -> list[Document]:
@@ -47,14 +47,14 @@ def chunk_context_data(context_data: list[Document]) -> list[Document]:
     :return: the chunked Documents
     :rtype: list[Document]
     """
-#    text_splitter = RecursiveCharacterTextSplitter(
-#        ???,
-#        ???,
-#        ???,
-#        ???
-#    )
+    text_splitter = RecursiveCharacterTextSplitter(
+        chunk_size=1000,
+        chunk_overlap=100,
+        length_function=len,
+        is_separator_regex=False
+    )
 
-#    return ???
+    return text_splitter.split_documents(context_data)
     pass
 
 def get_embedding_model(model_name: str = "sentence-transformers/all-MiniLM-L6-v2") -> HuggingFaceEmbeddings:
@@ -66,7 +66,7 @@ def get_embedding_model(model_name: str = "sentence-transformers/all-MiniLM-L6-v
     :return: The embedding model.
     :rtype: HuggingFaceEmbeddings
     """
-#    return HuggingFaceEmbeddings(model_name=???)
+    return HuggingFaceEmbeddings(model_name=model_name)
     pass
 
 def create_vector_store(chunks: list[Document], embedding_model: Embeddings = get_embedding_model(), path: str = "./chromadb") -> Chroma:
@@ -82,11 +82,11 @@ def create_vector_store(chunks: list[Document], embedding_model: Embeddings = ge
     :return: The vector store
     :rtype: Chroma
     """
-#    return Chroma???
-#        ???,
-#        ???,
-#        persist_directory=???
-#    )
+    return Chroma.from_documents(
+        documents=chunks,
+        embedding=embedding_model,
+        persist_directory=path
+    )
     pass
     
 def get_vector_store(embedding_model: Embeddings = get_embedding_model(), path: str = "./chromadb") -> Chroma:
