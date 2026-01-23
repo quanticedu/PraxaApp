@@ -22,7 +22,7 @@ class ChatModel(ChatOpenAI):
             **kwargs
         )
 
-def get_model(model_name: str = "<default model>") -> ChatModel:
+def get_model(model_name: str = "google/gemma-3-27b-it:free") -> ChatModel:
     """
     Gets a reference to a model
     
@@ -43,32 +43,32 @@ if __name__ == "__main__":
 #    from langchain_core.messages import SystemMessage, HumanMessage
 #    from langchain.prompts import ChatPromptTemplate
 
-#    ???
-#    ???
-#    ???
-#    ???
+#    prompt_template = ChatPromptTemplate([
+#        ("system", "You are a helpful assistant."),
+#        ("human", "What is {playwright}'s most recent play?")
+#    ])
 
 #    response = model.invoke(
-#        [???("You are a helpful assistant."),
-#         ???("What are some plays by Tawfiq al-Hakim?")])
+#        [SystemMessage("You are a helpful assistant."),
+#         HumanMessage("What are some plays by Tawfiq al-Hakim?")])
 #    print(response.content)
 #    print("----------")
 #    response = model.invoke(
-#        [???("You are a helpful assistant."),
-#         ???("What is Ryan Calais Camerons's most recent play?")])
+#        [SystemMessage("You are a helpful assistant."),
+#         HumanMessage("What is Ryan Calais Camerons's most recent play?")])
 #    print(response.content)
 #    print("----------")
 #    response = model.invoke(
-#        [???("You are a helpful assistant."),
-#         ???("What Broadway shows have more than 10,000 performances?")])
+#        [SystemMessage("You are a helpful assistant."),
+#         HumanMessage("What Broadway shows have more than 10,000 performances?")])
 #    print(response.content)
 
 #    print(prompt_template.invoke({"playwright": "Ryan Calais Cameron"}))
 #    response = model.invoke(prompt_template.invoke({"playwright": "Ryan Calais Cameron"}))
 #    print(response.content)
 
-#    chain = ???
-#    response = ???{"playwright": "Ryan Calais Cameron"})
+#    chain = prompt_template | model
+#    response = chain.invoke({"playwright": "Ryan Calais Cameron"})
 #    print(response.content)
 
     pass
