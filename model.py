@@ -22,7 +22,7 @@ class ChatModel(ChatOpenAI):
             **kwargs
         )
 
-def get_model(model_name: str = "<default model") -> ChatModel:
+def get_model(model_name: str = "<default model>") -> ChatModel:
     """
     Gets a reference to a model
     

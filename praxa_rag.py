@@ -1,41 +1,37 @@
-#import os
 from langchain.prompts import ChatPromptTemplate
-#from langchain_huggingface import HuggingFaceEmbeddings
-#from langchain_community.vectorstores import Chroma
 from langchain.schema.runnable import RunnablePassthrough, RunnableParallel
 from langchain_core.documents import Document
-#from langchain_community.chat_models import ChatOpenAI
-#from typing import Optional
-import context, model
+#import ???
 
-prompt_template = ChatPromptTemplate.from_messages([
-    ("system", "You are an assistant providing answers to questions about the theater. "
-               "In addition to your training data, use the additional context provided below to provide up-to-date information."),
-    ("user", "Question: {question}\nContext: {context}\nAnswer:")
-])
+#prompt_template = ???([
+#    (???, "You are an assistant providing answers to questions about the theater. In addition to your training data, use the additional context provided below to provide up-to-date information."),
+#    (???, "Question: ???\nContext: ???\nAnswer:")
+#])
 
-retriever = context.get_vector_store().as_retriever()
+#retriever = ???.as_retriever()
 
-question_and_docs = RunnableParallel(
-    { "question": RunnablePassthrough(),
-      "context_docs": retriever }
-)
+#question_and_docs = ???(
+#    { "question": ???,
+#      "context_docs": ??? }
+#)
 
-def make_context_string(dict_with_docs: dict[str, Document]):
+def make_context_string(dict_with_docs: dict[str, Document]) -> str:
     """
     Takes the contents of each Document object in a dictionary and joins them
     in one string, separated by two newlines
     
     :param dict_with_docs: The dictionary with the context docs under the key
                            "context_docs"
+    :type dict_with_docs: dict[str, Document]
     :returns: The combined string
+    :rtype: str
     """
     return "\n\n".join(doc.page_content for doc in dict_with_docs["context_docs"])
 
-context = RunnablePassthrough.assign(context=make_context_string)
+#context = ???(???=???)
 model = model.get_model()
-answer_chain = context | prompt_template | model
-chain_with_sources = question_and_docs.assign(answer=answer_chain)
+#answer_chain = context | prompt_template | model
+#chain_with_sources = ???.assign(???)
 
 def answer_and_sources(question: str) -> dict[str, str]:
     """
@@ -71,9 +67,11 @@ if __name__ == "__main__":
 #    print(add_length.invoke(my_dict))
 
 #    complete_prompt_chain = question_and_docs | context | prompt_template
-#    print(complete_prompt_chain.invoke("What is Ryan Calais Cameron's most recent play?"))
+#    result = complete_prompt_chain.invoke("What is Ryan Calais Cameron's most recent play?")
+#    print(type(result))
+#    print(result)
 
-#    chain = question_and_docs | context | prompt_template | model
+#    chain = ??? | ??? | ??? | ???
 #    result = chain.invoke("What is Ryan Calais Cameron's most recent play?")
 #    print(result.content)
 
