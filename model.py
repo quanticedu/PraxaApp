@@ -40,26 +40,26 @@ def get_model(model_name: str = "google/gemma-3-27b-it:free") -> ChatModel:
 if __name__ == "__main__":
 # when run as a script, run some tests to demonstrate capabilities
 #    model = get_model()
-#    from langchain_core.messages import SystemMessage, HumanMessage
+#    from langchain_core.messages import HumanMessage
 #    from langchain.prompts import ChatPromptTemplate
 
 #    prompt_template = ChatPromptTemplate([
-#        ("system", "You are a helpful assistant."),
+#        ("human", "You are a helpful assistant."),
 #        ("human", "What is {playwright}'s most recent play?")
 #    ])
 
 #    response = model.invoke(
-#        [SystemMessage("You are a helpful assistant."),
+#        [HumanMessage("You are a helpful assistant."),
 #         HumanMessage("What are some plays by Tawfiq al-Hakim?")])
 #    print(response.content)
 #    print("----------")
 #    response = model.invoke(
-#        [SystemMessage("You are a helpful assistant."),
+#        [HumanMessage("You are a helpful assistant."),
 #         HumanMessage("What is Ryan Calais Camerons's most recent play?")])
 #    print(response.content)
 #    print("----------")
 #    response = model.invoke(
-#        [SystemMessage("You are a helpful assistant."),
+#        [HumanMessage("You are a helpful assistant."),
 #         HumanMessage("What Broadway shows have more than 10,000 performances?")])
 #    print(response.content)
 
