@@ -40,7 +40,7 @@ def get_model(model_name: str = "<default model>") -> ChatModel:
 if __name__ == "__main__":
 # when run as a script, run some tests to demonstrate capabilities
 #    model = get_model()
-#    from langchain_core.messages import SystemMessage, HumanMessage
+#    from langchain_core.messages import HumanMessage
 #    from langchain.prompts import ChatPromptTemplate
 
 #    ???
