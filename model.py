@@ -2,8 +2,6 @@ from langchain_community.chat_models import ChatOpenAI
 from typing import Optional, Any
 import os
 
-os.environ["OPENROUTER_API_KEY"] = "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"
-
 DEFAULT_MODEL_CANDIDATES = [
     "meta-llama/llama-3.1-8b-instruct:free",
     "google/gemma-3-27b-it:free",
@@ -21,6 +19,10 @@ class ChatModel(ChatOpenAI):
             openai_api_base: str="https://openrouter.ai/api/v1",
             **kwargs: Any):
         openai_api_key = openai_api_key or os.getenv('OPENROUTER_API_KEY')
+        if not openai_api_key:
+            raise RuntimeError(
+                "Missing OPENROUTER_API_KEY. Set it in your shell before running model.py"
+            )
         super().__init__(
             openai_api_base=openai_api_base,
             openai_api_key=openai_api_key,
@@ -64,6 +66,11 @@ def invoke_with_model_fallback(messages: list[Any], model_candidates: Optional[l
             response = model.invoke(messages)
             return model_name, response
         except Exception as exc:
+            exc_text = str(exc)
+            if "401" in exc_text or "User not found" in exc_text:
+                raise RuntimeError(
+                    "OpenRouter authentication failed (401). Verify OPENROUTER_API_KEY is valid and belongs to your OpenRouter account."
+                ) from exc
             errors.append(f"{model_name}: {exc}")
             continue
 
@@ -73,12 +80,12 @@ def invoke_with_model_fallback(messages: list[Any], model_candidates: Optional[l
 if __name__ == "__main__":
 # when run as a script, run some tests to demonstrate capabilities
     from langchain_core.messages import HumanMessage
-#    from langchain.prompts import ChatPromptTemplate
+    from langchain.prompts import ChatPromptTemplate
 
-#    ???
-#    ???
-#    ???
-#    ???
+    prompt_template = ChatPromptTemplate([
+        ("human", "You are a helpful assistant."),
+        ("human", "What is {playwright}'s most recent play?")
+    ])
 
     model_used, response = invoke_with_model_fallback(
         [HumanMessage("You are a helpful assistant."),
