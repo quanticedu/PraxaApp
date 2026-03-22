@@ -2,7 +2,13 @@ from langchain_community.chat_models import ChatOpenAI
 from typing import Optional, Any
 import os
 
-os.environ["OPENROUTER_API_KEY"] = "<your key here>"
+os.environ["OPENROUTER_API_KEY"] = "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"
+
+DEFAULT_MODEL_CANDIDATES = [
+    "meta-llama/llama-3.1-8b-instruct:free",
+    "google/gemma-3-27b-it:free",
+    "openai/gpt-4o-mini",
+]
 
 class ChatModel(ChatOpenAI):
     """
@@ -22,7 +28,7 @@ class ChatModel(ChatOpenAI):
             **kwargs
         )
 
-def get_model(model_name: str = "<default model>") -> ChatModel:
+def get_model(model_name: str = DEFAULT_MODEL_CANDIDATES[0]) -> ChatModel:
     """
     Gets a reference to a model
     
@@ -37,10 +43,36 @@ def get_model(model_name: str = "<default model>") -> ChatModel:
         temperature=0
     )
 
+
+def invoke_with_model_fallback(messages: list[Any], model_candidates: Optional[list[str]] = None) -> tuple[str, Any]:
+    """
+    Invoke the chat model with fallback candidates when endpoints are unavailable or rate-limited.
+
+    :param messages: Chat messages to send
+    :type messages: list[Any]
+    :param model_candidates: Ordered model names to try
+    :type model_candidates: Optional[list[str]]
+    :return: Tuple of (model_name_used, response)
+    :rtype: tuple[str, Any]
+    """
+    candidates = model_candidates or DEFAULT_MODEL_CANDIDATES
+    errors: list[str] = []
+
+    for model_name in candidates:
+        try:
+            model = get_model(model_name)
+            response = model.invoke(messages)
+            return model_name, response
+        except Exception as exc:
+            errors.append(f"{model_name}: {exc}")
+            continue
+
+    joined_errors = "\n".join(errors)
+    raise RuntimeError(f"All model candidates failed.\n{joined_errors}")
+
 if __name__ == "__main__":
 # when run as a script, run some tests to demonstrate capabilities
-#    model = get_model()
-#    from langchain_core.messages import HumanMessage
+    from langchain_core.messages import HumanMessage
 #    from langchain.prompts import ChatPromptTemplate
 
 #    ???
@@ -48,20 +80,23 @@ if __name__ == "__main__":
 #    ???
 #    ???
 
-#    response = model.invoke(
-#        [???("You are a helpful assistant."),
-#         ???("What are some plays by Tawfiq al-Hakim?")])
-#    print(response.content)
-#    print("----------")
-#    response = model.invoke(
-#        [???("You are a helpful assistant."),
-#         ???("What is Ryan Calais Camerons's most recent play?")])
-#    print(response.content)
-#    print("----------")
-#    response = model.invoke(
-#        [???("You are a helpful assistant."),
-#         ???("What Broadway shows have more than 10,000 performances?")])
-#    print(response.content)
+    model_used, response = invoke_with_model_fallback(
+        [HumanMessage("You are a helpful assistant."),
+        HumanMessage("What are some plays by Tawfiq al-Hakim?")])
+    print(f"[model={model_used}]")
+    print(response.content)
+    print("----------")
+    model_used, response = invoke_with_model_fallback(
+        [HumanMessage("You are a helpful assistant."),
+         HumanMessage("What is Ryan Calais Camerons's most recent play?")])
+    print(f"[model={model_used}]")
+    print(response.content)
+    print("----------")
+    model_used, response = invoke_with_model_fallback(
+        [HumanMessage("You are a helpful assistant."),
+         HumanMessage("What Broadway shows have more than 10,000 performances?")])
+    print(f"[model={model_used}]")
+    print(response.content)
 
 #    print(prompt_template.invoke({"playwright": "Ryan Calais Cameron"}))
 #    response = model.invoke(prompt_template.invoke({"playwright": "Ryan Calais Cameron"}))
