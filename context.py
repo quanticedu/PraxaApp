@@ -109,9 +109,9 @@ def get_vector_store(embedding_model: Embeddings = get_embedding_model(), path: 
 if __name__ == "__main__":
     # when run as a script, run some tests to demonstrate capabilities
 #    pdfs = (
-#        { "url": "https://quanticedu.github.io/praxa/Longest Running Shows on Broadway 2025.pdf",
+#        { "url": "https://quanticedu.github.io/PraxaApp/Longest Running Shows on Broadway 2025.pdf",
 #          "filename": "Longest Running Shows on Broadway.pdf" },
-#        { "url": "https://quanticedu.github.io/praxa/Every play and musical coming to the West End in 2025.pdf",
+#        { "url": "https://quanticedu.github.io/PraxaApp/Every play and musical coming to the West End in 2025.pdf",
 #          "filename": "Every play and musical coming to the West End in 2025.pdf" }
 #    )
 #    download_context_data(pdfs)
